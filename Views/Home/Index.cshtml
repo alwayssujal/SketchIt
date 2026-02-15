@@ -1,0 +1,730 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div id="homeView">
+    <div class="text-center">
+        <h1 class="display-2 fw-bold schoolbell-regular">Sketch It</h1>
+        <p>Sketch the <a href="#">word</a> and let other player guess it.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-10 col-md-8 col-lg-6">
+
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input id="name" class="form-control" placeholder="Enter your name" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Room Code</label>
+                <input id="code" class="form-control" placeholder="Enter 4 letter code" required />
+            </div>
+
+            <button class="btn btn-lg btn-success w-100" onclick="joinRoom()">
+                Play!
+            </button>
+
+            <hr />
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#createRoomModal">
+                Create Private Room
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="createRoomModal" tabindex="-1" aria-labelledby="createRoomModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="createRoomModalLabel">Create Private Room</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Enter your name</label>
+                    <input id="playerName" class="form-control" required />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Create room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<div id="lobbyView" class="d-none text-center">
+    <h2>Room Code: <span id="roomCode"></span></h2>
+    <ul id="playerList" class="list-group mt-3"></ul>
+
+    <button id="startGameBtn" class="btn btn-success mt-3 d-none">
+        Start Game
+    </button>
+</div>
+
+<div id="gameView" class="d-none game-view">
+
+    <div class="container-fluid h-100 p-0">
+        <div class="game-top-bar">
+
+            <!-- ⏱ Timer -->
+            <div id="roundTimer" class="inline-timer d-none">
+                <svg class="timer-svg" viewBox="0 0 120 120">
+                    <circle class="timer-bg" cx="60" cy="60" r="52" />
+                    <circle class="timer-progress" cx="60" cy="60" r="52" />
+                </svg>
+                <span id="timerText" class="timer-text">60</span>
+            </div>
+            <audio id="tickSound" preload="auto">
+                <source src="/sounds/tick.mp3" type="audio/mpeg">
+            </audio>
+            <audio id="timeupSound" preload="auto">
+                <source src="/sounds/timeup.mp3" type="audio/mpeg">
+            </audio>
+
+
+            <!-- ✏️ Word -->
+            <div id="wordDisplay" class="word-display-inline">
+                _ _ _ _ _
+            </div>
+
+            <!-- ⚙️ Settings -->
+            <button class="game-settings-btn">
+                ⚙️
+            </button>
+
+        </div>
+
+
+        <div class="row h-100 m-0">
+
+            <!-- Canvas -->
+            <div class="col-12 col-lg-7 p-0 canvas-col">
+                <div class="canvas-wrapper">
+                    <div class="draw-tools">
+                        <button class="btn btn-light btn-sm" onclick="undoLastStroke()">↩ Undo</button>
+                        <button class="btn btn-danger btn-sm" onclick="clearCanvas()">🧹 Clear</button>
+                    </div>
+                    <canvas id="drawCanvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Right panel -->
+            <div class="col-12 col-lg-5 p-0 side-col">
+
+                <!-- Player list (hidden on mobile) -->
+                <div class="player-list d-none d-lg-block">
+                    <ul id="gamePlayerList" class="list-group small m-2"></ul>
+                </div>
+
+                <!-- Chat -->
+                <div class="chat-box d-flex flex-column">
+                    <div id="chatMessages" class="chat-messages flex-grow-1"></div>
+                    <input id="chatInput" class="chat-input" placeholder="Type guess..." />
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+    <!-- Drawer Word Selection Modal -->
+    <div class="modal fade" id="wordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content word-modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title schoolbell-regular">Pick a word to draw!</h5>
+                </div>
+                <div class="modal-body d-flex flex-column gap-3">
+                    <!-- Word buttons will be injected here -->
+                    <div id="wordOptions" class="d-flex justify-content-around flex-wrap gap-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="finalScoreModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content final-score-modal">
+                <div class="modal-header border-0 justify-content-center">
+                    <h2 class="schoolbell-regular">🏆 Final Scores</h2>
+                </div>
+
+                <div class="modal-body">
+                    <ul id="finalScoreList" class="list-group score-list"></ul>
+                </div>
+
+                <div class="modal-footer border-0 justify-content-center">
+                    <button class="btn btn-success px-4" onclick="location.reload()">
+                        Play Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<div id="statusOverlay" class="status-overlay d-none">
+    <div class="status-card">
+        <div id="statusIcon" class="status-icon">⏳</div>
+        <h2 id="statusTitle">Waiting...</h2>
+        <p id="statusMessage"></p>
+        <div id="countdown" class="countdown d-none"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
+
+        let playerName = "";
+        let isCurrentUserHost = false;
+        let isDrawer = false;
+        let currentRoomCode = "";
+        let currentWord = "";
+
+        const canvas = document.getElementById("drawCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.lineWidth = 6;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = "#2f2f2f";
+        
+        let strokes = [];        // all completed strokes
+        let currentStroke = []; // stroke being drawn right now
+
+        let drawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        const drawTools = document.querySelector(".draw-tools");
+
+        async function start() {
+            await connection.start();
+        }
+        start();
+
+        function joinRoom() {
+            playerName = document.getElementById("name").value;
+            const code = document.getElementById("code").value;
+
+            if (!playerName || !code) return;
+
+            connection.invoke("JoinRoom", code.toUpperCase(), playerName);
+        }
+
+        connection.on("JoinFailed", (message) => alert(message));
+
+        document.querySelector("#createRoomModal .btn-primary")
+            .addEventListener("click", () => {
+                const name = document.getElementById("playerName").value;
+                if (!name) return;
+
+                playerName = name;
+                connection.invoke("CreateRoom", playerName);
+            });
+
+        connection.on("RoomCreated", (code, players) => {
+            isCurrentUserHost = true;
+            closeCreateRoomModal();
+            showLobby(code, players);
+        });
+
+        connection.on("PlayerJoined", (code, players) => showLobby(code, players));
+
+        connection.on("GameStarted", (players) => {
+            showStatus("🚀", "Game starting!", "Get your pencil ready ✏️");
+            showCountdown(3, () => {
+                hideStatus();
+                showGameView(players);
+            });
+        });
+
+        connection.on("ReceiveDrawLine", (sx, sy, ex, ey, color, width) => {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+
+            if (sx === ex && sy === ey) {
+                // DOT
+                ctx.beginPath();
+                ctx.arc(sx, sy, width / 2, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+            } else {
+                // LINE
+                ctx.beginPath();
+                ctx.moveTo(sx, sy);
+                ctx.lineTo(ex, ey);
+                ctx.stroke();
+            }
+
+            if (!isDrawer) {
+                if (!strokes.length || strokes[strokes.length - 1]._ended) {
+                    strokes.push([]);
+                }
+
+                strokes[strokes.length - 1].push({
+                    startX: sx,
+                    startY: sy,
+                    endX: ex,
+                    endY: ey,
+                    color,
+                    width
+                });
+            }
+        });
+
+
+
+        connection.on("ReceiveClearCanvas", () => {
+            strokes = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+
+        const chatInput = document.getElementById("chatInput");
+        const chatMessages = document.getElementById("chatMessages");
+
+        chatInput.addEventListener("keypress", e => {
+            if (e.key === "Enter") {
+                const message = chatInput.value.trim();
+                if (!message) return;
+                connection.invoke("SendChatMessage", currentRoomCode, playerName, message);
+                chatInput.value = "";
+            }
+        });
+
+        connection.on("ReceiveChatMessage", (sender, message) => {
+            const msgDiv = document.createElement("div");
+            msgDiv.className = sender === playerName ? "sender" : "receiver";
+            msgDiv.innerHTML = `<strong>${sender === playerName ? "You" : sender}:</strong> ${message}`;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+
+        // ---------------- Canvas Drawing ----------------
+        canvas.addEventListener("pointerdown", e => {
+            if (!isDrawer) return;
+
+            drawing = true;
+            currentStroke = [];
+
+            const rect = canvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+
+            // ✅ draw dot locally
+            ctx.beginPath();
+            ctx.arc(lastX, lastY, ctx.lineWidth / 2, 0, Math.PI * 2);
+            ctx.fillStyle = ctx.strokeStyle;
+            ctx.fill();
+
+            const dot = {
+                startX: lastX,
+                startY: lastY,
+                endX: lastX,
+                endY: lastY,
+                color: ctx.strokeStyle,
+                width: ctx.lineWidth
+            };
+
+            currentStroke.push(dot);
+
+            // 🔥 SEND USING SAME PIPELINE
+            connection.invoke(
+                "DrawLine",
+                currentRoomCode,
+                dot.startX,
+                dot.startY,
+                dot.endX,
+                dot.endY,
+                dot.color,
+                dot.width
+            );
+        });
+
+
+
+        canvas.addEventListener("pointermove", e => {
+            if (!drawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            const segment = {
+                startX: lastX,
+                startY: lastY,
+                endX: x,
+                endY: y,
+                color: ctx.strokeStyle,
+                width: ctx.lineWidth
+            };
+
+            currentStroke.push(segment);
+
+            connection.invoke(
+                "DrawLine",
+                currentRoomCode,
+                segment.startX,
+                segment.startY,
+                segment.endX,
+                segment.endY,
+                segment.color,
+                segment.width
+            );
+
+            lastX = x;
+            lastY = y;
+        });
+
+
+        canvas.addEventListener("pointerup", () => {
+            if (!drawing) return;
+            drawing = false;
+
+            if (currentStroke.length > 0) {
+                currentStroke._ended = true;
+                strokes.push(currentStroke);
+            }
+
+            // tell others stroke finished
+            connection.invoke("StrokeEnded", currentRoomCode);
+        });
+        connection.on("StrokeEnded", () => {
+            if (!isDrawer && strokes.length) {
+                strokes[strokes.length - 1]._ended = true;
+            }
+        });
+
+
+        canvas.addEventListener("pointerout", () => drawing = false);
+        connection.on("ReceiveUndo", updatedStrokes => {
+            strokes = updatedStrokes;
+            redrawCanvas();
+        });
+
+
+        function undoLastStroke() {
+            if (!isDrawer || strokes.length === 0) return;
+
+            strokes.pop();
+            redrawCanvas();
+
+            connection.invoke("Undo", currentRoomCode, strokes);
+        }
+
+
+        function redrawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            strokes.forEach(stroke => {
+                stroke.forEach(s => {
+                    ctx.strokeStyle = s.color;
+                    ctx.lineWidth = s.width;
+                    ctx.beginPath();
+                    ctx.moveTo(s.startX, s.startY);
+                    ctx.lineTo(s.endX, s.endY);
+                    ctx.stroke();
+                });
+            });
+        }
+
+        function clearCanvas() {
+            if (!isDrawer) return;
+
+            strokes = [];
+            redrawCanvas();
+
+            connection.invoke("ClearCanvas", currentRoomCode);
+        }
+
+
+
+        // ---------------- Lobby & Game Views ----------------
+        document.getElementById("startGameBtn").addEventListener("click", () => {
+            connection.invoke("StartGame", currentRoomCode);
+        });
+
+        function showLobby(code, players) {
+            currentRoomCode = code;
+            document.getElementById("homeView").classList.add("d-none");
+            document.getElementById("lobbyView").classList.remove("d-none");
+
+            document.getElementById("roomCode").innerText = code;
+            document.getElementById("startGameBtn").classList.toggle("d-none", !isCurrentUserHost);
+
+            updatePlayerList(players);
+        }
+
+        function updatePlayerList(players) {
+            const list = document.getElementById("playerList");
+            list.innerHTML = "";
+            players.forEach(p => {
+                const li = document.createElement("li");
+                li.className = "list-group-item";
+                li.innerText = p.isHost ? `👑 ${p.name}` : p.name;
+                list.appendChild(li);
+            });
+        }
+
+        function showGameView(players) {
+            document.getElementById("lobbyView").classList.add("d-none");
+            document.getElementById("gameView").classList.remove("d-none");
+            renderGamePlayers(players);
+            requestAnimationFrame(resizeCanvas);
+        }
+
+        function renderGamePlayers(players) {
+            const list = document.getElementById("gamePlayerList");
+            list.innerHTML = "";
+            players.forEach(p => {
+                const li = document.createElement("li");
+                li.className = "list-group-item";
+                li.textContent = p.isHost ? `👑 ${p.name}` : p.name;
+                list.appendChild(li);
+            });
+        }
+
+        function resizeCanvas() {
+            const ratio = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * ratio;
+            canvas.height = rect.height * ratio;
+            ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+            ctx.lineWidth = 6;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.strokeStyle = "#2f2f2f";
+        }
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        // ---------------- Drawer & Word Selection ----------------
+         connection.on("DrawerAssigned", (drawerId, words) => {
+            isDrawer = drawerId === connection.connectionId;
+
+            canvas.style.pointerEvents = isDrawer ? "auto" : "none";
+            canvas.classList.remove("canvas-disabled");
+
+            // 🔥 SHOW / HIDE DRAW TOOLS
+            if (drawTools) {
+                drawTools.style.display = isDrawer ? "flex" : "none";
+            }
+            if (isDrawer) {
+                showWordSelectionModal(words);
+                // showStatus("🎨", "You're drawing!", "Pick a word and start sketching ✏️");
+            } else {
+                sendSystemMessage("Someone is drawing now!");
+            }
+        });
+
+
+         function showWordSelectionModal(words) {
+            const modalEl = document.getElementById("wordModal");
+            const modal = new bootstrap.Modal(modalEl, { backdrop: "static" });
+
+            const wordOptions = document.getElementById("wordOptions");
+            wordOptions.innerHTML = "";
+
+            words.forEach(word => {
+                const btn = document.createElement("button");
+                btn.innerText = word;
+
+                btn.addEventListener("click", () => {
+                    selectWord(word);
+                    modal.hide();
+                });
+
+                wordOptions.appendChild(btn);
+            });
+
+            modal.show();
+        }
+
+
+        function selectWord(word) {
+            currentWord = word;
+            document.getElementById("wordDisplay").innerText = word;
+            connection.invoke("WordSelected", currentRoomCode, word);
+
+            showStatus("✨", "Let's draw!", `Your word is "${word}"`);
+            setTimeout(hideStatus, 1500);
+        }
+
+
+        connection.on("DrawerAssignedToEveryone", (drawerName, wordLength) => {
+            if (!isDrawer) {
+                const blanks = "_ ".repeat(wordLength).trim();
+                document.getElementById("wordDisplay").innerText = blanks;
+            }
+        });
+        const timerContainer = document.getElementById("roundTimer");
+        const timerText = document.getElementById("timerText");
+        const progressCircle = timerContainer.querySelector(".timer-progress");
+
+        const RADIUS = 52;
+        const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+        progressCircle.style.strokeDasharray = CIRCUMFERENCE;
+
+        let totalTime = 60;
+
+        connection.on("RoundStarted", (round, seconds) => {
+            doodleLayer.style.opacity = "0.35";
+            totalTime = seconds;
+
+            timerContainer.classList.remove("d-none", "danger");
+            timerText.innerText = seconds;
+            progressCircle.style.strokeDashoffset = 0;
+        });
+        const tickSound = document.getElementById("tickSound");
+        const timeupSound = document.getElementById("timeupSound");
+
+        connection.on("RoundTimerTick", seconds => {
+            timerText.innerText = seconds;
+
+            const offset = CIRCUMFERENCE * (1 - seconds / totalTime);
+            progressCircle.style.strokeDashoffset = offset;
+
+            // 🚨 danger animation
+            if (seconds <= 10) {
+                if(seconds == 0) {
+                    timeupSound.play().catch(() => {});
+                } else{
+                    tickSound.play().catch(() => {});
+                }
+                timerContainer.classList.add("danger");
+            } else {
+                timerContainer.classList.remove("danger");
+            }
+        });
+
+
+        connection.on("RoundEnded", (data) => {
+            console.log(data);
+            if (data.reason === "TimeUp") {
+                sendSystemMessage("⏰ Time’s up!");
+            }
+            isDrawer = false;
+            drawing = false;
+            canvas.classList.add("canvas-disabled");
+            canvas.style.pointerEvents = "none";
+            if (drawTools) drawTools.style.display = "none";
+            doodleLayer.style.opacity = "1";
+            timerContainer.classList.add("d-none");
+            timerContainer.classList.remove("danger");
+            dimMusic();
+            setTimeout(restoreMusic, 3000);
+        });
+
+        connection.on("CorrectGuess", (name, points, totalScore) => {
+            sendSystemMessage(`🎉 ${name} guessed it! +${points} points`);
+        });
+
+        connection.on("ScoreUpdated", players => {
+            console.log(players);
+            const list = document.getElementById("gamePlayerList");
+            list.innerHTML = "";
+
+            players.forEach(p => {
+                const li = document.createElement("li");
+                li.className = "list-group-item";
+                li.textContent = `${p.name} — ${p.score}`;
+                list.appendChild(li);
+            });
+        });
+        connection.on("GameEnded", players => {
+            const modalEl = document.getElementById("finalScoreModal");
+            const modal = new bootstrap.Modal(modalEl, { backdrop: "static" });
+
+            const list = document.getElementById("finalScoreList");
+            list.innerHTML = "";
+
+            players.forEach((p, index) => {
+                const li = document.createElement("li");
+                li.className = "list-group-item";
+                list.appendChild(li);
+                        if (index === 0) {
+                    li.classList.add("winner-glow");
+                }
+                let medal = "🎨";
+                if (index === 0) medal = "🥇";
+                else if (index === 1) medal = "🥈";
+                else if (index === 2) medal = "🥉";
+
+                li.innerHTML = `
+                    <span class="score-rank">${medal} ${p.name}</span>
+                    <span>${p.score} pts</span>
+                `;
+
+                li.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            modal.show();
+            var victorySound = document.getElementById("victorySound");
+            victorySound.volume = 0.5;
+            victorySound.play();
+            
+        });
+
+
+
+        // ---------------- Utilities ----------------
+        function sendSystemMessage(message) {
+            const msgDiv = document.createElement("div");
+            msgDiv.classList.add("receiver");
+            msgDiv.style.fontStyle = "italic";
+            msgDiv.textContent = message;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function closeCreateRoomModal() {
+            const modalEl = document.getElementById("createRoomModal");
+            const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.hide();
+        }
+
+        function showStatus(icon, title, message) {
+            statusIcon.innerText = icon;
+            statusTitle.innerText = title;
+            statusMessage.innerText = message;
+            countdown.classList.add("d-none");
+            statusOverlay.classList.remove("d-none");
+        }
+
+        function hideStatus() {
+            statusOverlay.classList.add("d-none");
+        }
+
+        function showCountdown(seconds, done) {
+            let current = seconds;
+            countdown.classList.remove("d-none");
+            countdown.innerText = current;
+
+            const timer = setInterval(() => {
+                current--;
+                if (current <= 0) {
+                    clearInterval(timer);
+                    countdown.innerText = "GO!";
+                    setTimeout(done, 600);
+                } else {
+                    countdown.innerText = current;
+                }
+            }, 1000);
+        }
+    </script>
+}

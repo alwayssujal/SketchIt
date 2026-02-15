@@ -1,0 +1,40 @@
+﻿<div class="container mt-5" style="max-width: 400px;">
+    <div class="mb-3">
+        <label class="form-label">Your Name</label>
+        <input id="playerName" class="form-control" required />
+    </div>
+
+    <button class="btn btn-primary w-100" onclick="createRoom()">
+        Create Room
+    </button>
+</div>
+
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+    <script type="text/javascript">
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/gameHub")
+            .build();
+
+        let playerName = "";
+
+        async function startConnection() {
+            await connection.start();
+        }
+
+        startConnection();
+
+        function createRoom() {
+            playerName = document.getElementById("playerName").value;
+            if (!playerName) return;
+
+            connection.invoke("CreateRoom", playerName);
+        }
+
+        connection.on("RoomCreated", function (code) {
+            window.location.href = `/Room/Lobby?code=${code}&name=${playerName}`;
+        });
+    </script>
+}

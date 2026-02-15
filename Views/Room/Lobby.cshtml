@@ -1,0 +1,264 @@
+﻿@{
+    ViewData["Title"] = "Lobby";
+    var roomCode = ViewBag.Code;
+    var name = ViewBag.Name;
+}
+<style>
+    canvas {
+        touch-action: none; /* prevents scrolling while drawing */
+    }
+
+</style>
+<div class="p-3 w-100 border rounded">
+    <div class="d-flex text-center justify-content-center w-100">
+        <h4>Cucumber</h4>
+    </div>
+</div>
+<div class="row g-0" style="height: 60vh">
+    <!-- Middle -->
+    <div class="col-12 col-lg-7 order-1 order-lg-2 p-2 d-flex flex-column">
+        <!-- Canvas wrapper -->
+        <div class="flex-grow-1 d-flex border rounded">
+            <canvas id="drawCanvas" class="w-100"></canvas>
+        </div>
+
+        <!-- Clear button -->
+        <div class="text-end mt-2">
+            <button id="undoCanvasBtn" class="btn btn-sm btn-light" title="Undo">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+            <button id="resetCanvasBtn" class="btn btn-sm btn-light" title="Clear">
+                <i class="bi bi-trash"></i>
+            </button>
+            <button id="changeDrawerBtn"
+                    class="btn btn-sm btn-warning">
+                Change Drawer
+            </button>
+        </div>
+    </div>
+
+    <!-- Left -->
+    <div class="col-6 col-lg-2 order-2 order-lg-1 p-2">
+        <div class="border rounded">
+            <h4 class="text-center mt-2">Room <span class="badge bg-dark">@roomCode</span></h4>
+            <ul id="playerList" class="list-group mt-4">
+            </ul>
+        </div>
+    </div>
+
+    <!-- Right -->
+    <div class="col-6 col-lg-3 order-3 order-lg-3 p-2 d-flex flex-column" style="height: 40vh">
+
+        <!-- MESSAGES (scrollable) -->
+        <div class="d-flex flex-column h-100 border rounded p-2">
+
+            <!-- MESSAGES -->
+            <div id="messageBox" class="flex-fill overflow-auto mb-2">
+                @* <div class="d-flex">
+                    <div class="fw-bold pe-1">Sujal:</div>
+                    <div>Monster</div>
+                </div> *@
+            </div>
+
+            <!-- INPUT -->
+            <div class="flex-shrink-0">
+                <input id="chatInput"
+                       class="form-control"
+                       type="text"
+                       placeholder="Type your guess here" />
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    @* <script src="~/js/room.js"></script> *@
+
+    <script>
+        const roomCode = "@roomCode";
+        const playerName = "@name";
+        const canvas = document.getElementById("drawCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let drawing = false;
+        let lastX = 0, lastY = 0;
+        let isHost = false;
+        let isDrawer = false;
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/gameHub")
+            .build();
+
+        async function start() {
+            await connection.start();
+            await connection.invoke("JoinRoom", roomCode, playerName);
+
+            // Ask server for current players
+            connection.invoke("GetPlayers", roomCode);
+        }
+
+        start();
+
+        const list = document.getElementById("playerList");
+
+        function addPlayer(name) {
+            if (document.getElementById(name)) return;
+
+            const li = document.createElement("li");
+            li.id = name;
+            li.className = "list-group-item d-flex justify-content-between align-items-center";
+            li.innerText = name;
+
+            list.appendChild(li);
+        }
+
+        function removePlayer(name) {
+            const el = document.getElementById(name);
+            if (el) el.remove();
+        }
+
+        // Initial list
+        connection.on("PlayerList", function (players) {
+            list.innerHTML = "";
+            players.forEach(addPlayer);
+        });
+
+        // Live updates
+        connection.on("PlayerJoined", function (name) {
+            addPlayer(name);
+        });
+
+        connection.on("DrawerChanged", function (drawerConnectionId) {
+            isDrawer = connection.connectionId === drawerConnectionId;
+
+            canvas.style.cursor = isDrawer ? "crosshair" : "not-allowed";
+            chatInput.disabled = isDrawer;
+        });
+                canvas.addEventListener("pointerdown", e => {
+            if (!isDrawer) return;
+
+            drawing = true;
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+        });
+        document.getElementById("changeDrawerBtn")
+        .addEventListener("click", function () {
+            connection.invoke("ChangeDrawer", roomCode)
+                .catch(err => console.error(err));
+        });
+
+        canvas.addEventListener("pointermove", e => {
+            console.log("drawing", isDrawer);
+            if (!drawing || !isDrawer) return;
+
+            const x = e.offsetX;
+            const y = e.offsetY;
+
+            drawLine(lastX, lastY, x, y);
+
+            connection.invoke(
+                "Draw",
+                roomCode,
+                lastX, lastY,
+                x, y
+            );
+
+            lastX = x;
+            lastY = y;
+        });
+
+        canvas.addEventListener("pointerup", () => drawing = false);
+        canvas.addEventListener("pointerleave", () => drawing = false);
+
+        function drawLine(x0, y0, x1, y1) {
+            ctx.strokeStyle = "#000";
+            ctx.lineWidth = 3;
+            ctx.lineCap = "round";
+
+            ctx.beginPath();
+            ctx.moveTo(x0, y0);
+            ctx.lineTo(x1, y1);
+            ctx.stroke();
+        }
+        connection.on("DrawLine", function (x0, y0, x1, y1) {
+            drawLine(x0, y0, x1, y1);
+        });
+        document.getElementById("resetCanvasBtn")
+            .addEventListener("click", () => {
+                if (!isDrawer) return;
+                connection.invoke("ClearCanvas", roomCode);
+            });
+
+        connection.on("ClearCanvas", function () {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // connection.on("PlayerLeft", function (name) {
+        //     removePlayer(name);
+        // });
+        const chatInput = document.getElementById("chatInput");
+        const messageBox = document.getElementById("messageBox");
+
+        chatInput.addEventListener("keydown", function (e) {
+            if (e.key !== "Enter") return;
+
+            if (isDrawer) {
+                alert("Drawer cannot guess!");
+                return;
+            }
+
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+
+            connection.invoke("SendMessage", roomCode, playerName, msg);
+            chatInput.value = "";
+        });
+
+
+        connection.on("ReceiveMessage", function (name, message) {
+            const row = document.createElement("div");
+            row.className = "d-flex mb-1";
+
+            const user = document.createElement("div");
+            user.className = "fw-bold pe-1";
+            user.textContent = name + ":";
+
+            const msg = document.createElement("div");
+            msg.textContent = message;
+
+            row.appendChild(user);
+            row.appendChild(msg);
+
+            messageBox.appendChild(row);
+
+            // auto-scroll
+            messageBox.scrollTop = messageBox.scrollHeight;
+        });
+
+        connection.on("SystemMessage", function (text) {
+            const row = document.createElement("div");
+            row.className = "text-center text-muted fst-italic my-1";
+            row.innerText = text;
+
+            messageBox.appendChild(row);
+            messageBox.scrollTop = messageBox.scrollHeight;
+        });
+        connection.on("DrawerChanged", function (drawerConnectionId) {
+            isDrawer = connection.connectionId === drawerConnectionId;
+        });
+
+
+    </script>
+}

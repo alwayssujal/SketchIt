@@ -1,0 +1,736 @@
+﻿/* =========================
+   SKETCH COLORS & GRADIENTS 🎨
+   ========================= */
+
+:root {
+    --coral: #ff8a7a;
+    --coral-light: #ffd1cb;
+    --sky: #74c0fc;
+    --sky-light: #e7f5ff;
+    --mint: #63e6be;
+    --mint-light: #e6fcf5;
+    --lavender: #b197fc;
+    --lavender-light: #f3f0ff;
+    --butter: #ffe066;
+    --ink: #2f2f2f;
+}
+
+/* ---------- Title Gradient ---------- */
+
+h1.schoolbell-regular {
+    background: linear-gradient( -15deg, var(--coral), var(--lavender), var(--sky) );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* ---------- Marker Highlight Links ---------- */
+
+.text-center a {
+    background: linear-gradient( transparent 55%, var(--butter) 55% );
+    border-bottom: none;
+    padding: 0 4px;
+}
+
+/* ---------- Card Gradient ---------- */
+
+.col-10 {
+    background: linear-gradient( 180deg, #ffffff, var(--lavender-light) );
+}
+
+/* ---------- Inputs ---------- */
+
+.form-control {
+    border-color: var(--sky);
+}
+
+    .form-control:focus {
+        border-color: var(--coral);
+    }
+
+/* ---------- Button Base ---------- */
+
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+/* ---------- Play Button (Coral → Peach) ---------- */
+
+.btn-success {
+    background: linear-gradient( 135deg, var(--coral), var(--coral-light) );
+    border-color: var(--coral);
+}
+
+/* ---------- Create Room (Lavender → Sky) ---------- */
+
+.btn-primary {
+    background: linear-gradient( 135deg, var(--lavender), var(--sky) );
+    border-color: var(--lavender);
+}
+
+/* ---------- Hover Marker Sweep ---------- */
+
+.btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( 120deg, transparent 30%, rgba(255,255,255,0.6), transparent 70% );
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+.btn:hover::before {
+    opacity: 1;
+    transform: translateX(100%);
+    transition: transform 0.5s ease;
+}
+
+/* ---------- Success / Info Variants ---------- */
+
+.btn-info {
+    background: linear-gradient( 135deg, var(--sky), var(--sky-light) );
+    border-color: var(--sky);
+}
+
+.btn-warning {
+    background: linear-gradient( 135deg, var(--butter), #fff3bf );
+    border-color: var(--butter);
+}
+
+/* ---------- Modal Accent ---------- */
+
+.modal-header {
+    background: linear-gradient( 90deg, var(--sky-light), var(--mint-light) );
+    border-bottom: 3px dashed var(--ink);
+}
+
+/* ---------- HR with Color ---------- */
+
+hr {
+    border-top-color: var(--lavender);
+}
+.col-10 {
+    filter: hue-rotate(0deg);
+}
+/* =========================
+   GAME STATUS VISUALS ✏️
+   (Matches Sketch Theme)
+   ========================= */
+
+.status-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.status-card {
+    background: linear-gradient( 180deg, #ffffff, var(--lavender-light) );
+    border: 3px dashed var(--ink);
+    border-radius: 28px;
+    padding: 2.5rem 3rem;
+    text-align: center;
+    box-shadow: 10px 10px 0 var(--coral-light);
+    animation: cardWiggle 2.5s infinite ease-in-out;
+}
+
+@keyframes cardWiggle {
+    0%, 100% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(1deg) scale(1.04);
+    }
+}
+
+.status-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    animation: floatIcon 2s infinite ease-in-out;
+}
+
+@keyframes floatIcon {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.status-card h2 {
+    font-family: 'Schoolbell', cursive;
+    background: linear-gradient( -10deg, var(--coral), var(--lavender), var(--sky) );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.status-card p {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+/* ---------- Countdown ---------- */
+
+.countdown {
+    margin-top: 1rem;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--coral);
+    animation: popMarker 0.6s ease;
+}
+
+@keyframes popMarker {
+    from {
+        transform: scale(0.5) rotate(-5deg);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+/* ---------- Subtle confetti dots ---------- */
+
+.status-card::after {
+    content: "✦ ✧ ✦ ✧";
+    display: block;
+    margin-top: 1rem;
+    color: var(--mint);
+    opacity: 0.6;
+    animation: sparkle 3s infinite ease-in-out;
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+/* ========== GAME LAYOUT ========== */
+
+.game-layout {
+    height: 100vh;
+}
+
+/* ---------- Canvas ---------- */
+
+.canvas-col {
+    height: 50vh; /* 📱 mobile: top half */
+}
+
+.canvas-wrapper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(180deg, #ffffff, #f3f0ff);
+    border-radius: 16px;
+    border: 3px dashed #b197fc;
+    box-shadow: inset 0 0 0 4px #fff;
+}
+.draw-tools {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 20;
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(6px);
+    padding: 6px 8px;
+    border-radius: 10px;
+    display: none;
+}
+
+    /* Optional: nicer buttons */
+    .draw-tools .btn {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+#drawCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+}
+
+/* ---------- Right side ---------- */
+
+.side-col {
+    height: 50vh; /* 📱 mobile bottom half */
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-box {
+    flex: 1;
+}
+
+/* ---------- Desktop ---------- */
+
+@media (min-width: 992px) {
+    .canvas-col {
+        height: 100%;
+    }
+
+    .side-col {
+        height: 100%;
+    }
+}
+#gameView {
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* no scrollbars */
+}
+
+/* Game view fills remaining height below navbar */
+.game-view {
+    height: 80vh; /* adjust 64px to your navbar height */
+}
+
+    /* Container + row must fill */
+    .game-view .container-fluid,
+    .game-view .row {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+/* ---------- Mobile layout ---------- */
+.canvas-col {
+    height: 50%; /* top half canvas */
+}
+
+.side-col {
+    height: 50%; /* bottom half chat */
+    display: flex;
+    flex-direction: column;
+}
+
+.canvas-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+/* Canvas fills wrapper */
+#drawCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Chat box fills */
+.chat-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.canvas-col {
+    height: 50%;
+    padding: 0; /* remove any Bootstrap padding */
+}
+/* Desktop: canvas left column full height */
+@media (min-width: 992px) {
+    .canvas-col {
+        height: 80vh; /* your desired height */
+        padding: 0;
+    }
+
+    .side-col {
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .player-list {
+        flex: 0 0 auto;
+    }
+
+    .chat-box {
+        flex: 1;
+    }
+}
+.chat-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden; /* prevent overflow outside box */
+}
+
+/* Chat messages container */
+.chat-messages {
+    flex: 1; /* fills all space above input */
+    overflow-y: auto; /* scroll when too long */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* space between messages */
+}
+
+    /* Scrollbar styling (optional, playful) */
+    .chat-messages::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: var(--sky);
+        border-radius: 4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.1);
+    }
+
+    /* Sender (right) */
+    .chat-messages div.sender {
+        align-self: flex-end;
+        background: linear-gradient(135deg, var(--coral-light), var(--sky-light));
+        color: var(--ink);
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        max-width: 75%;
+        box-shadow: 3px 3px 0 var(--coral);
+    }
+
+    /* Receiver (left) */
+    .chat-messages div.receiver {
+        align-self: flex-start;
+        background: linear-gradient(135deg, var(--lavender-light), var(--mint-light));
+        color: var(--ink);
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        max-width: 75%;
+        box-shadow: 3px 3px 0 var(--lavender);
+    }
+
+/* Input stays at bottom */
+.chat-input {
+    border-radius: 12px;
+    border: 2px dashed var(--sky);
+    background: linear-gradient(135deg, var(--sky-light), var(--mint-light));
+    color: var(--ink);
+    padding: 8px 12px;
+    font-family: 'Schoolbell', cursive;
+    font-size: 0.95rem;
+    outline: none;
+    margin: 6px;
+}
+
+    .chat-input:focus {
+        border-color: var(--coral);
+        box-shadow: 0 0 10px var(--coral);
+    }
+
+
+/* Animate new messages sliding in */
+@keyframes slideIn {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+.word-modal-content {
+    background: linear-gradient(180deg, var(--mint-light), var(--lavender-light));
+    /*border: 3px dashed var(--ink);*/
+    border-radius: 24px;
+    text-align: center;
+    padding: 1rem;
+    animation: popCard 0.3s ease;
+}
+
+    .word-modal-content h5 {
+        background: linear-gradient(-10deg, var(--coral), var(--lavender), var(--sky));
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+#wordOptions button {
+    background: linear-gradient(135deg, var(--sky-light), var(--coral-light));
+    /*border: 2px dashed var(--ink);*/
+    border-radius: 16px;
+    padding: 10px 18px;
+    font-family: 'Schoolbell', cursive;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    #wordOptions button:hover {
+        transform: scale(1.1) rotate(-2deg);
+        box-shadow: 4px 4px 0 var(--coral);
+    }
+
+@keyframes popCard {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+.word-display {
+    font-family: 'Schoolbell', cursive;
+    font-size: 2rem;
+    color: var(--ink);
+    background: linear-gradient(135deg, var(--sky-light), var(--mint-light));
+    padding: 6px 12px;
+    border-radius: 12px;
+    /*border: 2px dashed var(--ink);*/
+    display: inline-block;
+    margin: 0 auto;
+    user-select: none;
+}
+/* =========================
+   GAME TOP BAR ✏️
+   ========================= */
+
+.game-top-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    margin: 6px;
+    background: linear-gradient(135deg, var(--sky-light), var(--mint-light));
+    border-radius: 18px;
+}
+
+/* =========================
+   PLAYFUL TIMER (VISIBLE)
+   ========================= */
+.timer-bg {
+    fill: none; /* IMPORTANT */
+}
+
+.timer-progress {
+    fill: none;
+}
+
+.inline-timer {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background: #fffef8;
+    border-radius: 50%;
+    border: 3px dashed #ff922b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: timerFloat 3s ease-in-out infinite;
+}
+
+/* floating effect */
+@keyframes timerFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* number text */
+.inline-timer span,
+.inline-timer .timer-text {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #212529; /* DARK TEXT → readable */
+    text-shadow: 1px 1px 0 #fff;
+    z-index: 2;
+}
+
+/* SVG circle */
+.inline-timer svg {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+}
+
+/* progress ring */
+.inline-timer .timer-progress {
+    stroke: #ff6b6b; /* BRIGHT RED */
+    stroke-width: 6;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 4px rgba(255,107,107,0.6));
+}
+.inline-timer.danger {
+    background: #fff0f0;
+    border-color: #ff6b6b;
+    animation: panicShake 0.3s infinite;
+}
+
+@keyframes panicShake {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(6deg);
+    }
+
+    50% {
+        transform: rotate(-6deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.inline-timer.danger .timer-text {
+    color: #c92a2a;
+}
+
+
+/* ---------- WORD ---------- */
+
+.word-display-inline {
+    flex: 1;
+    text-align: center;
+    font-family: 'Schoolbell', cursive;
+    font-size: 1.6rem;
+    color: var(--ink);
+    background: linear-gradient(135deg, var(--sky-light), var(--lavender-light));
+    border-radius: 12px;
+    padding: 6px 12px;
+    user-select: none;
+}
+
+/* ---------- SETTINGS ---------- */
+
+.game-settings-btn {
+    border: none;
+    background: linear-gradient(135deg, var(--butter), #fff3bf);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--butter);
+    transition: transform 0.2s ease;
+}
+
+    .game-settings-btn:hover {
+        transform: rotate(15deg) scale(1.1);
+    }
+
+.final-score-modal {
+    border-radius: 20px;
+    background: linear-gradient(135deg, #fdfbfb, #ebedee);
+    animation: popIn 0.4s ease;
+}
+
+.score-list {
+    padding: 0;
+}
+
+    .score-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.1rem;
+        padding: 12px 16px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        background: white;
+        animation: slideUp 0.4s ease forwards;
+    }
+
+        .score-list li:nth-child(1) {
+            background: #fff6d6;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+.score-rank {
+    font-size: 1.3rem;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+.winner-glow {
+    animation: glowPulse 2s infinite;
+}
+
+@keyframes glowPulse {
+    0% {
+        box-shadow: 0 0 10px rgba(255,215,0,0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(255,215,0,0.7);
+    }
+
+    100% {
+        box-shadow: 0 0 10px rgba(255,215,0,0.4);
+    }
+}
+.canvas-disabled {
+    opacity: 0.4;
+    filter: grayscale(0.5);
+    transition: all 0.3s ease;
+}

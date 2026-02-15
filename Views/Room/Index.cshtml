@@ -1,0 +1,65 @@
+﻿<style>
+    canvas {
+        touch-action: none; /* prevents scrolling while drawing */
+    }
+
+</style>
+<div class="p-3 w-100 border rounded">
+    <div class="d-flex text-center justify-content-center w-100">
+        <h4>Cucumber</h4>
+    </div>
+</div>
+<div class="row g-0" style="height: 60vh">
+    <!-- Middle -->
+    <div class="col-12 col-lg-7 order-1 order-lg-2 p-2 d-flex flex-column">
+        <!-- Canvas wrapper -->
+        <div class="flex-grow-1 d-flex border rounded">
+            <canvas id="drawCanvas" class="w-100"></canvas>
+        </div>
+
+        <!-- Clear button -->
+        <div class="text-end mt-2">
+            <button id="undoCanvasBtn" class="btn btn-sm btn-light" title="Undo">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+            <button id="resetCanvasBtn" class="btn btn-sm btn-light" title="Clear">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Left -->
+    <div class="col-6 col-lg-2 order-2 order-lg-1 p-2">
+        <div class="border rounded" style="height: 250px"></div>
+    </div>
+
+    <!-- Right -->
+    <div class="col-6 col-lg-3 order-3 order-lg-3 p-2 d-flex flex-column" style="height:100%;">
+
+        <!-- MESSAGES (scrollable) -->
+        <div class="d-flex flex-column h-100 border rounded p-2">
+
+            <!-- MESSAGES -->
+            <div id="messageBox" class="flex-fill overflow-auto mb-2">
+                <div class="d-flex">
+                    <div class="fw-bold pe-1">Sujal:</div>
+                    <div>Monster</div>
+                </div>
+            </div>
+
+            <!-- INPUT -->
+            <div class="flex-shrink-0">
+                <input id="chatInput"
+                       class="form-control"
+                       type="text"
+                       placeholder="Type your guess here" />
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script src="~/js/room.js"></script>
+
+
