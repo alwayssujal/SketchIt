@@ -1,4 +1,6 @@
+wwwroot\css\cartoon-theme.css
 wwwroot\css\site.css
+wwwroot\css\sketch-colors.css
 wwwroot\favicon.ico
 wwwroot\images\bg.jpg
 wwwroot\js\room.js
@@ -62,10 +64,8 @@ wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
 wwwroot\lib\microsoft\signalr\dist\browser\signalr.js
 wwwroot\lib\microsoft\signalr\dist\browser\signalr.min.js
-wwwroot\css\cartoon-theme.css
-wwwroot\css\sketch-colors.css
-wwwroot\sounds\tick.mp3
-wwwroot\sounds\timeup.mp3
 wwwroot\sounds\bg-music.mp3
 wwwroot\sounds\click.mp3
+wwwroot\sounds\tick.mp3
+wwwroot\sounds\timeup.mp3
 wwwroot\sounds\victory.mp3

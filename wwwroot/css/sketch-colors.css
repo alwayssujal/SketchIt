@@ -550,8 +550,8 @@ html, body {
 
 .inline-timer {
     position: relative;
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     background: #fffef8;
     border-radius: 50%;
     border: 3px dashed #ff922b;
@@ -575,7 +575,7 @@ html, body {
 /* number text */
 .inline-timer span,
 .inline-timer .timer-text {
-    font-size: 1.4rem;
+    font-size: 1rem;
     font-weight: 900;
     color: #212529; /* DARK TEXT → readable */
     text-shadow: 1px 1px 0 #fff;
@@ -631,11 +631,11 @@ html, body {
     flex: 1;
     text-align: center;
     font-family: 'Schoolbell', cursive;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     color: var(--ink);
     background: linear-gradient(135deg, var(--sky-light), var(--lavender-light));
     border-radius: 12px;
-    padding: 6px 12px;
+    padding: 6px 10px;
     user-select: none;
 }
 
@@ -733,4 +733,54 @@ html, body {
     opacity: 0.4;
     filter: grayscale(0.5);
     transition: all 0.3s ease;
+}
+/* =========================
+   MOBILE TOP BAR COMPACT ✏️
+   ========================= */
+@media (max-width: 768px) {
+
+    .game-top-bar {
+        padding: 4px 6px;
+        gap: 6px;
+        margin: 4px;
+        border-radius: 12px;
+    }
+
+    /* shrink word display */
+    .word-display-inline {
+        font-size: 1.1rem;
+        padding: 4px 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* shrink timer */
+    .inline-timer {
+        width: 48px;
+        height: 48px;
+        border-width: 2px;
+    }
+
+        .inline-timer .timer-text {
+            font-size: 0.9rem;
+        }
+
+        .inline-timer .timer-progress {
+            stroke-width: 4;
+        }
+
+    /* shrink settings button */
+    .game-settings-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+    }
+}
+.canvas-col,
+.side-col {
+    min-height: 0;
+}
+.word-display-inline {
+    max-width: 100%;
 }

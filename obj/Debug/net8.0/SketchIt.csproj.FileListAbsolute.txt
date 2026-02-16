@@ -32,3 +32,4 @@ C:\Users\ACER NITRO 5\source\repos\SketchIt\SketchIt\obj\Debug\net8.0\refint\Ske
 C:\Users\ACER NITRO 5\source\repos\SketchIt\SketchIt\obj\Debug\net8.0\SketchIt.pdb
 C:\Users\ACER NITRO 5\source\repos\SketchIt\SketchIt\obj\Debug\net8.0\SketchIt.genruntimeconfig.cache
 C:\Users\ACER NITRO 5\source\repos\SketchIt\SketchIt\obj\Debug\net8.0\ref\SketchIt.dll
+C:\Users\ACER NITRO 5\source\repos\SketchIt\SketchIt\obj\Debug\net8.0\SketchIt.sourcelink.json
