@@ -1,5 +1,5 @@
 ﻿/* =========================
-   SKETCH / HAND-DRAWN ✏️
+   SKETCH / HAND-DRAWN ✏️ (Readable Version)
    ========================= */
 
 :root {
@@ -16,55 +16,54 @@
 body {
     background: repeating-linear-gradient( 0deg, rgba(0,0,0,0.02) 0, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 3px ), linear-gradient(180deg, #fffefb, var(--paper-dark));
     color: var(--ink);
-    font-family: 'Patrick Hand', cursive;
+    font-family: 'Comic Neue', 'Comic Sans MS';
 }
 
 /* ---------- Title ---------- */
 
 h1.schoolbell-regular {
-    font-family: 'Gloria Hallelujah', cursive;
+    font-family: 'Comic Neue', 'Comic Sans MS';
     font-size: 3rem;
     color: var(--ink);
     transform: rotate(-1deg);
-    text-shadow: 3px 3px 0 #ffd43b;
+    text-shadow: 2px 2px 0 #ffd43b;
 }
 
 /* ---------- Subtitle ---------- */
 
 .text-center p {
     font-size: 1.2rem;
-    transform: rotate(0.4deg);
+    transform: rotate(0.2deg);
 }
 
 .text-center a {
     color: var(--accent);
     text-decoration: none;
-    border-bottom: 3px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
 }
 
 /* ---------- Sketch Card ---------- */
 
 .col-10 {
     background: var(--paper);
-    padding: 2.25rem;
-    border-radius: 18px 22px 20px 16px;
+    padding: 2rem;
+    border-radius: 16px 16px 16px 16px;
     border: 3px solid var(--ink);
     box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
     animation: wobble 6s ease-in-out infinite;
 }
 
-/* Slight imperfect wobble */
 @keyframes wobble {
     0% {
-        transform: rotate(0.4deg);
+        transform: rotate(0.2deg);
     }
 
     50% {
-        transform: rotate(-0.4deg);
+        transform: rotate(-0.2deg);
     }
 
     100% {
-        transform: rotate(0.4deg);
+        transform: rotate(0.2deg);
     }
 }
 
@@ -79,9 +78,10 @@ h1.schoolbell-regular {
 
 .form-control {
     background: transparent;
-    border: 3px dashed var(--ink);
-    border-radius: 14px 18px 12px 20px;
+    border: 2px dashed var(--ink);
+    border-radius: 12px;
     font-size: 1.1rem;
+    font-family: 'Comic Neue', 'Comic Sans MS';
 }
 
     .form-control:focus {
@@ -92,9 +92,9 @@ h1.schoolbell-regular {
 /* ---------- Buttons ---------- */
 
 .btn {
-    font-family: 'Gloria Hallelujah', cursive;
-    border: 3px solid var(--ink);
-    border-radius: 20px 16px 22px 14px;
+    font-family: 'Comic Neue', 'Comic Sans MS';
+    border: 2px solid var(--ink);
+    border-radius: 16px;
     font-size: 1.2rem;
     background: var(--paper);
     color: var(--ink);
@@ -111,11 +111,11 @@ h1.schoolbell-regular {
 }
 
 .btn:hover {
-    transform: translate(-2px, -2px) rotate(-1deg);
+    transform: translate(-1px, -1px);
 }
 
 .btn:active {
-    transform: translate(2px, 2px);
+    transform: translate(1px, 1px);
     box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
 }
 
@@ -123,7 +123,7 @@ h1.schoolbell-regular {
 
 hr {
     border: none;
-    border-top: 3px dashed var(--ink);
+    border-top: 2px dashed var(--ink);
     margin: 2rem 0;
 }
 
@@ -131,11 +131,11 @@ hr {
 
 .modal-content {
     background: var(--paper);
-    border: 3px solid var(--ink);
-    border-radius: 24px 18px 22px 16px;
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
 }
 
 .modal-title {
-    font-family: 'Gloria Hallelujah', cursive;
+    font-family: 'Comic Neue', 'Comic Sans MS';
 }

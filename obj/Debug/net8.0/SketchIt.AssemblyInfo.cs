@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SketchIt")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e2f6e20227ea4e68270938c9091151fd56b9d791")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+619a6dbc2c89f4050bab650bbd2fbe1829f17cbd")]
 [assembly: System.Reflection.AssemblyProductAttribute("SketchIt")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SketchIt")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

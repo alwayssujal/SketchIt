@@ -1,5 +1,5 @@
-wwwroot\css\cartoon-theme.css
 wwwroot\css\site.css
+wwwroot\css\sketch-colors.css
 wwwroot\favicon.ico
 wwwroot\images\bg.jpg
 wwwroot\js\room.js
@@ -68,4 +68,4 @@ wwwroot\sounds\click.mp3
 wwwroot\sounds\tick.mp3
 wwwroot\sounds\timeup.mp3
 wwwroot\sounds\victory.mp3
-wwwroot\css\sketch-colors.css
+wwwroot\css\cartoon-theme.css
