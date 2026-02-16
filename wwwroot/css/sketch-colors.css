@@ -784,3 +784,9 @@ html, body {
 .word-display-inline {
     max-width: 100%;
 }
+.system-message {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    margin: 6px 0;
+}

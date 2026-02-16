@@ -339,7 +339,6 @@ namespace SketchIt.Hubs
             await Task.Delay(3000);
             await StartNextRound(room);
         }
-
         private async Task StartNextRound(Room room)
         {
             if (room.Players.Count < 2)
@@ -367,6 +366,52 @@ namespace SketchIt.Hubs
                     nextDrawer.ConnectionId,
                     room.CurrentWords);
         }
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            var result = _roomStore.FindPlayer(Context.ConnectionId);
+            if (result == null)
+                return;
+
+            var (room, player) = result.Value;
+
+            // 🟥 HOST LEFT → DELETE ROOM
+            if (player.IsHost)
+            {
+                room.RoundCts?.Cancel();
+
+                await Clients.Group(room.RoomCode)
+                    .SendAsync("SystemMessage", "🚨 Host disconnected. Room closed.");
+
+                await Clients.Group(room.RoomCode)
+                    .SendAsync("RoomClosed");
+
+                _roomStore.RemoveRoom(room.RoomCode);
+                return;
+            }
+
+            bool wasDrawer = player.ConnectionId == room.DrawerConnectionId;
+
+            lock (room.SyncRoot)
+            {
+                room.Players.Remove(player);
+            }
+
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, room.RoomCode);
+
+            await Clients.Group(room.RoomCode)
+                .SendAsync("SystemMessage", $"👋 {player.Name} left the game.");
+
+            await Clients.Group(room.RoomCode)
+                .SendAsync("PlayerLeft", room.Players.Select(p => p.Name));
+
+            if (wasDrawer && room.IsRoundActive)
+            {
+                await EndRound(room.RoomCode, "DrawerLeft");
+            }
+
+            await base.OnDisconnectedAsync(exception);
+        }
+
         private List<string> GetRandomWords(int count)
         {
             var words = new[]

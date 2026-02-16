@@ -679,12 +679,31 @@
             victorySound.play();
             
         });
+         // 🚪 Someone left the room
+        connection.on("PlayerLeft", (playerName, players) => {
+            sendSystemMessage(`🚪 ${playerName} left the room`);
+            updatePlayerList(players);
+            renderGamePlayers(players);
+        });
 
+        // ❌ Host disconnected → room closed
+        connection.on("RoomClosed", (reason) => {
+            sendSystemMessage("❌ Host disconnected. Room closed.");
+
+            alert(reason || "Room closed by host");
+            location.reload(); // safest reset
+        });
+
+        connection.onclose(() => {
+            alert("⚠️ Disconnected from server");
+            location.reload();
+        });
 
 
         // ---------------- Utilities ----------------
         function sendSystemMessage(message) {
             const msgDiv = document.createElement("div");
+            msgDiv.classList.add("system-message");
             msgDiv.classList.add("receiver");
             msgDiv.style.fontStyle = "italic";
             msgDiv.textContent = message;

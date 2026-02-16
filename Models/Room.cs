@@ -17,6 +17,7 @@
         public int MaxRounds { get; set; } = 5;
         public bool RoundEnded { get; set; }
         public bool IsRoundActive { get; set; }
-
+        public bool IsGameActive { get; set; }
+        public object SyncRoot { get; } = new();
     }
 }

@@ -24,7 +24,7 @@ namespace SketchIt.Models
             if (!_rooms.TryGetValue(code, out var room))
                 return false;
 
-            lock (room)
+            lock (room.SyncRoot)
             {
                 if (room.Players.Any(p => p.ConnectionId == player.ConnectionId))
                     return false;
@@ -39,11 +39,25 @@ namespace SketchIt.Models
             if (!_rooms.TryGetValue(code, out var room))
                 return;
 
-            lock (room)
+            lock (room.SyncRoot)
             {
                 room.Players.RemoveAll(p => p.ConnectionId == connectionId);
             }
         }
+        public (Room room, Player player)? FindPlayer(string connectionId)
+        {
+            foreach (var room in _rooms.Values)
+            {
+                lock (room.SyncRoot)
+                {
+                    var player = room.Players.FirstOrDefault(p => p.ConnectionId == connectionId);
+                    if (player != null)
+                        return (room, player);
+                }
+            }
+            return null;
+        }
+
 
     }
 
